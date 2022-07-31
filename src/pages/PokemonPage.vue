@@ -3,13 +3,13 @@
 
     <div v-else>
         <h1>¿Quién es este pokémon?</h1>
-        
-        <PokemonPicture 
-            :pokemon-id="pokemon.id" 
-            :show-pokemon="showPokemon" 
+
+        <PokemonPicture
+            :pokemon-id="pokemon.id"
+            :show-pokemon="showPokemon"
         />
 
-        <PokemonOptions 
+        <PokemonOptions
             :pokemons="pokemonArr"
             @selection-pokemon="checkAnswer"
         />
@@ -22,57 +22,50 @@
         </template>
 
     </div>
-    
+
 </template>
 
-<script>
+<script setup>
+import { onMounted, ref } from 'vue';
 import PokemonOptions from '@/components/PokemonOptions'
 import PokemonPicture from '@/components/PokemonPicture'
-
 import getPokemonOptions from '@/helpers/getPokemonOptions'
 
+const pokemonArr = ref([])
+const pokemon = ref(null)
+const showPokemon = ref(false)
+const showAnswer = ref(false)
+const message = ref('')
 
-export default {
-    components: { PokemonOptions, PokemonPicture },
-    data() {
-        return {
-            pokemonArr: [],
-            pokemon: null,
-            showPokemon: false,
-            showAnswer: false,
-            message: ''
-        }
-    },
-    methods: {
-        async mixPokemonArray() {
-            this.pokemonArr = await getPokemonOptions()
+onMounted(() => {
+    mixPokemonArray()
+})
 
-            const rndInt = Math.floor( Math.random() * 4 )
-            this.pokemon = this.pokemonArr[ rndInt ]
-        },
-        checkAnswer( selectedId ) {
-            this.showPokemon = true
-            this.showAnswer  = true
+const mixPokemonArray = async () => {
+    pokemonArr.value = await getPokemonOptions()
 
-            if( selectedId === this.pokemon.id ) {
-                this.message = `Correcto, ${ this.pokemon.name }`
-            } else {
-                this.message = `Oops, era ${ this.pokemon.name }`
-            }
-        },
-        newGame() {
+    const rndInt = Math.floor( Math.random() * 4 )
+    pokemon.value = pokemonArr.value[ rndInt ]
+}
 
-            this.showPokemon = false
-            this.showAnswer  = false
-            this.pokemonArr  = []
-            this.pokemon     = null
-            this.mixPokemonArray()            
+const checkAnswer = ( selectedId ) => {
+    showPokemon.value = true
+    showAnswer.value  = true
 
-        }
-    },
-    mounted() {
-        this.mixPokemonArray()
+    if( selectedId === pokemon.value.id ) {
+        message.value = `Correcto, ${ pokemon.value.name }`
+    } else {
+        message.value = `Oops, era ${ pokemon.value.name }`
     }
+}
+
+const newGame = () => {
+
+    showPokemon.value = false
+    showAnswer.value  = false
+    pokemonArr.value  = []
+    pokemon.value     = null
+    mixPokemonArray()
 
 }
 </script>

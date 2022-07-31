@@ -5,7 +5,7 @@
             :src="imgSrc" 
             class="hidden-pokemon"
             alt="pokemon">
-        
+
         <img v-else
             :src="imgSrc"
             class="fade-in"
@@ -14,27 +14,17 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue'
 
-export default {
-    props: {
-        pokemonId: {
-            type: Number,
-            required: true
-        },
-        showPokemon: {
-            type: Boolean,
-            required: true,
-            default: false
-        }
-    },
-    computed: {
-        imgSrc() {
-            return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${ this.pokemonId }.svg`
-        }
-    }
+const props = defineProps({
+    pokemonId: Number,
+    showPokemon: Boolean
+})
 
-}
+const imgSrc = computed(() => {
+    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${ props.pokemonId }.svg`
+})
 </script>
 
 <style scoped>

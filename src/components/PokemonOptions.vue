@@ -10,20 +10,10 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    pokemons: {
-      type: Array,
-      required: true
-    }
-  },
-  methods: {
-    hola(){
-      // this.$emit()
-    }
-  }
-}
+<script setup>
+defineProps({
+  pokemons: Array
+})
 </script>
 
 <style scoped>
